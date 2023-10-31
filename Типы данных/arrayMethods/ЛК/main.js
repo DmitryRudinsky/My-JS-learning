@@ -263,7 +263,7 @@ arr = [1, 2, 3, 4, 5];
 result = arr.reduce((sum, current) => sum + current, 0);
 alert(result); //15
 
-// Array.isArray(value)  . Он возвращает true , если value массив, и false , если
+// Array.isArray(value). Он возвращает true , если value массив, и false , если
 // нет.
 
 alert(Array.isArray({})); // false

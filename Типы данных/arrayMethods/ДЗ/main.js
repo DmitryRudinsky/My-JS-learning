@@ -66,3 +66,122 @@ alert( arr ); // HTML, JavaScript, CSS (без изменений)
 
 // 6 задание
 
+function Calculator(){
+    this.methods = {
+        '+': (a, b) => a + b,
+        '-': (a, b) => a - b,
+    }
+    this.calculate = function(str) {
+        split = str.split(' '),
+        a = +split[0],
+        b = +split[2],
+        op = split[1]
+
+        if(!this.methods[op] || isNaN(a) || isNaN(b)){
+            return NaN;
+        }else{
+            return this.methods[op](a, b);
+        }
+    }
+    this.addMethod = function(name, func){
+        if(!this.methods[name]){
+            this.methods[name] = func;
+        }
+    }
+}
+
+let powerCalc = new Calculator;
+powerCalc.addMethod("*", (a, b) => a * b);
+powerCalc.addMethod("/", (a, b) => a / b);
+powerCalc.addMethod("**", (a, b) => a ** b);
+let result = powerCalc.calculate("2 ** 3");
+alert( result ); // 8
+
+
+//7 задание
+
+vasya = { name: "Вася", age: 25 };
+petya = { name: "Петя", age: 30 };
+masha = { name: "Маша", age: 28 };
+
+users = [ vasya, petya, masha ];
+
+let names = users.map(item => item.name);
+alert( names );
+
+
+//8 задание
+
+let vasya = { name: "Вася", surname: "Пупкин", id: 1 };
+let petya = { name: "Петя", surname: "Иванов", id: 2 };
+let masha = { name: "Маша", surname: "Петрова", id: 3 };
+
+let users = [ vasya, petya, masha ];
+
+let usersMapped  = users.map(user => ({
+    fullName: `${user.name} ${user.surname}`,
+    id: `${user.id}`
+}));
+
+alert( usersMapped[0].id ); // 1
+alert( usersMapped[0].fullName ); // Вася Пупкин
+
+//9 задание
+
+vasya = { name: "Вася", age: 25 };
+petya = { name: "Петя", age: 30 };
+masha = { name: "Маша", age: 28 };
+
+arr = [ vasya, petya, masha ];
+
+function sortByAge(mas){
+    arr.sort((a, b) => a.age > b.age ? 1 : -1);
+}
+
+sortByAge(arr);
+alert(arr[0].name); // Вася
+alert(arr[1].name); // Маша
+alert(arr[2].name); // Петя
+
+
+// 10 задание
+
+arr = [1, 2, 3];
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}  
+
+//11 задание
+
+vasya = { name: "Вася", age: 25 };
+petya = { name: "Петя", age: 30 };
+masha = { name: "Маша", age: 29 };
+arr = [ vasya, petya, masha ];
+
+
+function getAverageAge(users){
+    let result = users.reduce((sm, name) => sm += name.age, 0) / users.length;
+    return result;
+}
+
+alert( getAverageAge(arr) );
+
+
+//12 задание
+
+function unique(arr) {
+    let result = [];
+    for (let elem of arr){
+        if (!result.includes(elem)){
+            result.push(elem);
+        }
+    }
+    return result;
+}
+let strings = ["кришна", "кришна", "харе", "харе",
+    "харе", "харе", "кришна", "кришна", ":-O"
+];
+alert( unique(strings) ); // кришна, харе, :-O
