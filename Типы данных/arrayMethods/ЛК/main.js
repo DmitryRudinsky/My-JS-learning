@@ -102,7 +102,7 @@ alert(arr.concat(arrayLike)); //1,2,что-то,ещё
 });
 
 // indexOf/lastIndexOf и includes
-// Методы arr.indexOf  , arr.lastIndexOf  и arr.includes  имеют одинаковый синтаксис и
+// Методы arr.indexOf , arr.lastIndexOf и arr.includes имеют одинаковый синтаксис и
 // делают по сути то же самое, что и их строковые аналоги, но работают с элементами
 // вместо символов:
 // arr.indexOf(item, from) ищет item , начиная с индекса from , и возвращает
