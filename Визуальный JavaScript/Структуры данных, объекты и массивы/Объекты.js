@@ -3,7 +3,7 @@
 
 let day1 = {
     squirrel: false,
-    events: ["Работал", "трогал дерево", "ел пиццу", "бегал"],
+    events: ["работал", "трогал дерево", "ел пиццу", "бегал"],
 };
 
 console.log(day1.squirrel); //false 
