@@ -10,4 +10,8 @@ for(let i = 0; i < array.length; i++){
     }
 }
 
+let newArray = array.filter(name => name.startsWith("http://"));
+
+
+console.log(newArray);
 console.log(array);
