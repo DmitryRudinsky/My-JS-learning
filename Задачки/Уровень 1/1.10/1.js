@@ -2,7 +2,7 @@
 
 let array = []
 for(let i = 0; i < 101; i++){
-    array.push(Math.round(Math.random() * 100));
+    array.push(Math.round(Math.floor() * 100));
 }
 
 console.log(array);
