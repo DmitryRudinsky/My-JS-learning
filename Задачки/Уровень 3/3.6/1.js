@@ -7,7 +7,7 @@ function delFromArray(array){
     array = array.map(a => String(a));
     for(let i = 0; i < array.length; i++){
         if(array[i].length > 3){
-            array.splice(i, 1).concat(array.slice(i));
+            array.splice(i, 1);
             i--;
         }
     }
