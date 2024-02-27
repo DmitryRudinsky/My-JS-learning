@@ -36,4 +36,4 @@ function arrOfMutualDivs(array){
     return [...divArr];
 }
 
-console.log(arrOfMutualDivs([720, 5040, 360, 234])); //[ 1, 2, 3, 6, 9, 18 ]
+console.log(arrOfMutualDivs([44, 110])); //[ 1, 2, 3, 6, 9, 18 ]
