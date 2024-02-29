@@ -92,3 +92,55 @@ for(let {x, y, value} of matrix){
 0 1 значение 0, 1
 1 1 значение 1, 1
 */
+
+"Ещё один практический пример"
+
+let range1 = {
+    from: 1,
+    to: 5,
+};
+
+range1[Symbol.iterator] = function(){
+    return{
+        current: this.from,
+        last: this.to,
+        next(){
+            if(this.current <= this.last){
+                return{done: false, value: this.current++};
+            }
+            else{
+                return {done: true};
+            }
+        }
+    };
+};
+
+for(let num of range1){
+    console.log(num); //1, 2, 3, 4, 5
+}
+
+let range2 = {
+    from: 1, 
+    to: 5,
+
+    [Symbol.iterator](){
+        this.current = this.from;
+        return this;
+    },
+    
+    next(){
+        if(this.current <= this.to){
+            return {done: false, value: this.current++};
+        }else{
+            return {done: true};
+        }
+    }
+};
+
+let arr = [];
+for(let num of range2){
+    console.log(num); //1 2 3 4 5
+    arr.push(num);
+}
+
+console.log(arr); //[ 1, 2, 3, 4, 5 ]
