@@ -31,6 +31,7 @@ console.log(blackRabbit[sym]); //55
 "которые могут мирно сосуществовать с другими свойствами, независимо от их имён."
 
 const toStringSymbol = Symbol("toString");
+console.log(toStringSymbol); //Symbol(toString)
 Array.prototype[toStringSymbol] = function(){
     return `${this.length} см голубой шерсти`;
 }
