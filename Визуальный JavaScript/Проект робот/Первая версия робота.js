@@ -13,20 +13,20 @@ let roads = [
 
 
 function buildGraph(edges){
-    let graph = Object.create(null);
-    function addEdge(from, to){
-        if (graph[from] == null){
-            graph[from] = [to];
-        } else{
-            graph[from].push(to);
+    let graph = Object.create(null); //Создаём объект без прототипа
+    function addEdge(from, to){ //Заводим функцию addEdge
+        if (graph[from] == null){ //Если в объекту graph, у свойства from нет значение
+            graph[from] = [to]; //то его первым значением будет выступать массив из одного элемента [to]
+        } else{ //Если же у свойства есть значение, в нашем случае это массив мест из from
+            graph[from].push(to);//То к имеющемуся массиву добавляем новый элемент
         }
     }
 
-    for(let [from, to] of edges.map(r => r.split("-"))){
-        addEdge(from, to);
-        addEdge(to, from);
+    for(let [from, to] of edges.map(r => r.split("-"))){ //Проходимся по массиву edges, разделяя каждый его элемент на 2 других при помощи метода split: from и to
+        addEdge(from, to); //Добавляем в объект graph пункты из from в to
+        addEdge(to, from); //И наоборот
     }
-    return graph;
+    return graph; //Выводим объект
 }
 
 const roadGraph = buildGraph(roads);
@@ -53,26 +53,65 @@ const roadGraph = buildGraph(roads);
 
 class VillageState{
     constructor(place, parcels){
-        this.place = place;
-        this.parcels = parcels;
+        this.place = place; //Текущее положение робота
+        this.parcels = parcels; //Множество недоставленных посылок, каждая их которых имеет текущее положение и адрес назначения
     }
 
-    move(destination){
-        if(!roadGraph[this.place].includes(destination)){
-            return this;
-        } else{
-            let parcels = this.parcels.map(p => {
-                if(p.place != this.place) return p;
-                return {place: destination, address: p.address}
-            }).filter(p => p.place != p.address);
-            return new VillageState(destination, parcels);
+    move(destination){ //destination - место, в которое нужно будет пойти. Пункт назначения
+        if(!roadGraph[this.place].includes(destination)){ //Проверка: если пункт назначения не соединён дорогой с текущем положением робота
+            return this; // Возвращаем старое состояние, так как это недопустимый ход.
+        } else{ //В ином случае
+            let parcels = this.parcels.map(p => { //Проходим по каждому элементу массива множества недоставленных посылок.
+                if(p.place != this.place) return p; //Если адрес текущего положения посылки не равен текущему положению робота, возвращаем в новый массив множества элемент без изменений.
+                return {place: destination, address: p.address} //Иначе текущее положение посылки = пункту назначения, а адрем остаётся таким же
+            }).filter(p => p.place != p.address); //Если текущее положение посылки != адресу доставки, оставляем их в массиве.
+            return new VillageState(destination, parcels); //Возвращаем новое состояние, при котором текущее положение робота=пункту назначения,
+            //а старое множество недоставленных посылок заменено новым.
         }
     }
 }
 
 
-let first = new VillageState("Почта", [{place: "Почта", address: "Дом Алисы"}]);
-let next = first.move("Дом Алисы"); //VillageState { place: 'Дом Алисы', parcels: [] }
+let first = new VillageState("Почта", [{place: "Почта", address: "Дом Алисы"}, {place: "Дом Алисы", address: "Дом Боба"}, {place: "Дом Боба", address: "Ратуша"}]);
+console.log(first);
+
+/*
+VillageState {
+  place: 'Почта',
+  parcels: [
+    { place: 'Почта', address: 'Дом Алисы' },
+    { place: 'Дом Алисы', address: 'Дом Боба' },
+    { place: 'Дом Боба', address: 'Ратуша' }
+  ]
+}
+*/
+
+let second = first.move("Дом Алисы"); 
+console.log(second);
+/*
+VillageState {
+  place: 'Дом Алисы',
+  parcels: [
+    { place: 'Дом Алисы', address: 'Дом Боба' },
+    { place: 'Дом Боба', address: 'Ратуша' }
+  ]
+}
+*/
+
+let third = second.move("Дом Боба");
+console.log(third);
+/*
+VillageState {
+  place: 'Дом Боба',
+  parcels: [ { place: 'Дом Боба', address: 'Ратуша' } ]
+}
+*/
+let fourth = third.move("Ратуша");
+console.log(fourth); //VillageState { place: 'Ратуша', parcels: [] }
+
+"В данном примере Робот прошёл следующий путь: Почта -> Дом Алисы -> Дом Боба -> Ратушка"
+
+
 
 "Результатом перемещения является доставка посылки, и это отражается в следующем состоянии."
 "Но исходное состояние по-прежнему описывает ситуацию, когда робот находится на почте, а посылка не доставлена."
@@ -82,38 +121,39 @@ let next = first.move("Дом Алисы"); //VillageState { place: 'Дом Ал
 "мы также передаём им их память и позволяем возвращать новую память."
 
 function runRobot(state, robot, memory){
-    for(let turn = 0;;turn++){
-        if(state.parcels.length == 0){
-            console.log(`Выполнено за ${turn} ходов`);
-            break;
-        }
-        let action = robot(state, memory);
-        state = state.move(action.direction);
+    for(let turn = 0;;turn++){ //Заводим цикл попыток(случайных движений робота в случайных направлениях)
+        if(state.parcels.length == 0){  //Если длина множества недоставленных посылок в объекте класса VillageState == 0
+            console.log(`Выполнено за ${turn} ходов`); //Выводим, за сколько ходом мы доставили эти посылки
+            break; // Заканчиваем цикл
+        } //В ином случае
+        let action = robot(state, memory); //пусть action = объект со свойством direction, значением которого будет случайное место назначения из точки state.place в массиве roadGrapg
+        state = state.move(action.direction); //Двигаемся в сторону того случайного направления из action и получаем новое состояние, из которого будем двигаться в следующей итерации
         memory = action.memory;
-        console.log(`Переход в направлении ${action.direction}`);
+        console.log(`Переход в направлении ${action.direction}`); //выводим направление, в сторону которого мы двигаемся
     }
 }
 
-function randomPick(array){
-    let choice = Math.floor(Math.random() * array.length);
-    return array[choice];
+function randomPick(array){ //Функция randomPick принимает массив
+    let choice = Math.floor(Math.random() * array.length); //choice = случайному индексу принятого массива
+    return array[choice]; //возвращаем элемент по случайному индексу
 }
 
-function randomRobot(state){
-    return {direction: randomPick(roadGraph[state.place])};
+function randomRobot(state){  //Функция принимает в себя объект класса VillageState вида {place: ... , parcels: [...]}
+    return {direction: randomPick(roadGraph[state.place])}; //Возвращает объект со свойством direction, значением которого будет случайное
+                                                            // место назначения из точки state.place в массиве roadGrapg
 }
 
-VillageState.random = function(parcelCount = 5){
-    let parcels = [];
-    for(let i = 0; i < parcelCount; i++){
-        let address = randomPick(Object.keys(roadGraph));
-        let place;
-        do{
+VillageState.random = function(parcelCount = 5){ //Задаём метод random класса VillageState, принимающий parcelCount - число посылок
+    let parcels = []; //Создаём новый массив
+    for(let i = 0; i < parcelCount; i++){ //Задаём цикл, который работает, пока не достигнет числа посылок
+        let address = randomPick(Object.keys(roadGraph)); //Адрес - это случайный элемент массива ключей объекта roadGraph
+        let place; //Заводим переменную place
+        do{ //Условие while (place == address) проверяет, совпадает ли сгенерированное случайное 
             place = randomPick(Object.keys(roadGraph));
-        } while(place == address);
-        parcels.push({place, address});
+        } while(place == address); //место place с адресом address. Если они совпадают, цикл повторяется, и генерируется новое случайное место.
+        parcels.push({place, address}); //Информация о созданной посылке добавляется в массив parcels в виде объекта со свойствами place и address.
     }
-    return new VillageState("Почта", parcels);
+    return new VillageState("Почта", parcels); //Возвращается новый объект VillageState, представляющий случайное состояние деревни с созданными посылками и текущим местоположением "Почта".
 };
 
 runRobot(VillageState.random(), randomRobot);
