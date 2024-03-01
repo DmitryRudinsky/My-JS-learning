@@ -77,3 +77,43 @@ let next = first.move("Дом Алисы"); //VillageState { place: 'Дом Ал
 "Результатом перемещения является доставка посылки, и это отражается в следующем состоянии."
 "Но исходное состояние по-прежнему описывает ситуацию, когда робот находится на почте, а посылка не доставлена."
 
+
+"Поскольку мы хотим, чтобы роботы запоминали какие-то вещи, чтобы составлять и выполнять планы,"
+"мы также передаём им их память и позволяем возвращать новую память."
+
+function runRobot(state, robot, memory){
+    for(let turn = 0;;turn++){
+        if(state.parcels.length == 0){
+            console.log(`Выполнено за ${turn} ходов`);
+            break;
+        }
+        let action = robot(state, memory);
+        state = state.move(action.direction);
+        memory = action.memory;
+        console.log(`Переход в направлении ${action.direction}`);
+    }
+}
+
+function randomPick(array){
+    let choice = Math.floor(Math.random() * array.length);
+    return array[choice];
+}
+
+function randomRobot(state){
+    return {direction: randomPick(roadGraph[state.place])};
+}
+
+VillageState.random = function(parcelCount = 5){
+    let parcels = [];
+    for(let i = 0; i < parcelCount; i++){
+        let address = randomPick(Object.keys(roadGraph));
+        let place;
+        do{
+            place = randomPick(Object.keys(roadGraph));
+        } while(place == address);
+        parcels.push({place, address});
+    }
+    return new VillageState("Почта", parcels);
+};
+
+runRobot(VillageState.random(), randomRobot);
