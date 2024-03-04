@@ -1,13 +1,13 @@
-let numberInput = document.querySelectorAll("#numberInput");
+"Даны пустые абзацы и кнопка. По нажатию на кнопку заполните абзацы числами по порядку."
 
-numberInput.forEach(number => {
-    number.addEventListener("blur", () => {
-        let currentNumber = parseFloat(number.value);
+let getNumbers = document.getElementById("getNumbers");
+let wordOutput = document.querySelectorAll("#wordOutput");
 
-        if(!isNaN(currentNumber)){
-            number.value = currentNumber * currentNumber;
-        }else{
-            number.value = "Введите число!!!";
-        }
+console.log(wordOutput);
+getNumbers.addEventListener("click", function(){
+    let cnt = 1;
+    wordOutput.forEach(elem => {
+        elem.innerHTML = cnt;
+        cnt+=1;
     })
-})
+});

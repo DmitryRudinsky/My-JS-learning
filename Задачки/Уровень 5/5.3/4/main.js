@@ -1,12 +1,9 @@
-let numberParagraphs = document.querySelectorAll("#numberParagraph");
+"Дан абзац, инпут и кнопка. В инпут вводится слово. По нажатию на кнопку переверните слово и запишите его в абзац."
 
-numberParagraphs.forEach(paragraph => {
-    paragraph.addEventListener("click", function(){
-        let currentNumber = paragraph.innerHTML;
-        if(!isNaN(currentNumber)){
-            paragraph.innerHTML = currentNumber * currentNumber;
-        }else{
-            paragraph.innerHTML = "Введите число!!!";
-        }
-    })
-})
+let reverseButton = document.getElementById("reverseButton");
+
+reverseButton.addEventListener("click", function(){
+    let inputWord = document.getElementById("inputWord").value;
+    let wordOutput = document.querySelector(".wordOutput");
+    wordOutput.innerHTML = String(inputWord).split("").reverse().join("");
+});
